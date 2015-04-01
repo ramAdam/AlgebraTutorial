@@ -8,10 +8,14 @@ import java.nio.ByteBuffer;
 import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.opengl.GLContext;
 
+import Graphics.Camera;
 import Graphics.Shader;
 import Input.Input;
 import Math.Matrix4f;
+import Math.Vector3f;
 import Tutorial.Box;
+import Tutorial.Crate;
+import Tutorial.Grid;
 
 public class Main implements Runnable{
 
@@ -20,11 +24,17 @@ public class Main implements Runnable{
 	
 	private long window;
 	
-	private int width = 400, height = 400;
+	private int width = 800, height = 800;
 	
 	private GLFWKeyCallback keyCallback;
 	
 	private Box box;
+	private Box box2;
+	private Crate crate1, crate2;
+	private Crate crate4, crate3;
+	private Crate crate5, crate6;
+	private Grid grid;
+	public Camera camera = new Camera(new Matrix4f());
 	
 	public void start(){
 		running = true;
@@ -97,14 +107,16 @@ public class Main implements Runnable{
 		
 		Shader.shader1.enable();
 		Matrix4f pr_matrix = Matrix4f.orthographic(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -10.0f, 10.0f);
-		
+//		Matrix4f pr_matrix = Matrix4f.perspective(10.0f, 10.0f, 10.0f, 10.0f, -1.0f, 100.0f, 15.0f, (float)width/(float)height);
+		Shader.shader1.setUniformMat4f("vw_matrix", Matrix4f.translate(camera.position));		
 		Shader.shader1.setUniformMat4f("pr_matrix", pr_matrix);
 		Shader.shader1.setUniform1i("tex", 1);
-	
+		
 		Shader.shader1.disable();
 		
-		box = new Box();
+		crate1 = new Crate();
 		
+		crate1.translate(new Vector3f(0, 0.75f, 0.0f));
 		
 	}
 	
@@ -112,7 +124,7 @@ public class Main implements Runnable{
 		// Polls for any window events such as the window closing etc.
 		glfwPollEvents();
 		
-		box.update();
+		camera.update();
 		
 	}
 	
@@ -120,12 +132,15 @@ public class Main implements Runnable{
 		// 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-		box.render();
+		camera.render();
+		
+		crate1.render();
+		
 		int i = glGetError();
 		if(i != GL_NO_ERROR)
 			System.out.println(i);
 		
-		// Swaps out our buffers
+		// Swaps out our bufferss
 		glfwSwapBuffers(window);
 	}
 	

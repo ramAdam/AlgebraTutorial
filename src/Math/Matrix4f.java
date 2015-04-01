@@ -2,6 +2,7 @@ package Math;
 
 import java.nio.FloatBuffer;
 
+import Graphics.Camera;
 import Util.Utilities;
 
 public class Matrix4f {
@@ -29,6 +30,38 @@ public class Matrix4f {
 		return matrix;
 	}
 	
+	public static Matrix4f perspective(float left, float right, float bottom, float top, float near, float far, float FoV, float aspect){
+		float y2 = near * (float)Math.tan(Math.toRadians(FoV));
+		float y1 = -y2;
+		float x1 = y1 * aspect;
+		float x2 = y2 * aspect;
+		return frustrum(x1, x2, y1, y2, near, far);
+	}
+	
+	public static Matrix4f frustrum(float left, float right, float bottom, float top, float near, float far){
+		Matrix4f cameraMat = new Matrix4f();
+		
+		cameraMat.elements[0 + 0 * 4] =  (2 * near) / (right - left);
+		cameraMat.elements[1 + 1 * 4] =  (2 * near) / (top - bottom);
+		cameraMat.elements[3 + 2 * 4] =  (2 * near * far) / (near - far);
+		cameraMat.elements[2 + 2 * 4] =  (near + far) / ( near - far);
+		cameraMat.elements[3 + 3 * 4] = 0;
+		cameraMat.elements[2 + 3 * 4] = -1.0f;
+		
+		cameraMat.elements[0 + 2 * 4] = (right + left) / (right - left);
+		cameraMat.elements[1 + 2 * 4] = (top + bottom) / (top - bottom);
+		cameraMat.elements[2 + 2 * 4] = (near + far) / (near - far);
+		
+		return cameraMat;
+	}
+	
+	
+	public static Matrix4f setupViewMatrix(Camera camera){
+		Matrix4f viewMatrix = new Matrix4f();
+		viewMatrix = Matrix4f.identity();
+		
+		return viewMatrix;
+	}
 	
 	// Gives us our orthographic matrix
 	public static Matrix4f orthographic(float left, float right, float bottom, float top, float near, float far){
@@ -59,6 +92,7 @@ public class Matrix4f {
 		matrix.elements[2 + 3 * 4] = vector.z;
 		return matrix;
 	}
+	
 	
 	// Our rotation function does exactly what it says on 
 	// the tin. We give it the angle with which we want to

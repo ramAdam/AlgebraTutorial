@@ -1,3 +1,4 @@
+
 package Tutorial;
 
 import Graphics.Shader;
@@ -7,7 +8,7 @@ import Math.Matrix4f;
 import Math.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
 
-public class Box extends GameObject{
+public class Grid extends GameObject{
 
 	public static float width = 3.5f;
 	public static float height = 3.5f;
@@ -23,13 +24,13 @@ public class Box extends GameObject{
 	public int counter = 0;
 	public int animState = 0;
 	
-	public float rot = 8.0f;
+	public float rot = 0.0f;
 	
 	private static float[] vertices = new float[]{
-			-width, -height, 0.2f,
-			-width,  height, 0.2f,
-			  width,  height, 0.2f,
-			  width, -height, 0.2f
+			-width, 0.2f,-height, 
+			-width,  0.2f,height, 
+			  width, 0.2f,  height,
+			  width, 0.2f, -height
 	};
 	
 	private static float[] texCoords = new float[]{
@@ -44,9 +45,9 @@ public class Box extends GameObject{
 			2,3,0
 	};
 	
-	private static String texPath = "assets/crate.jpg";
+	private static String texPath = "assets/grid.png";
 	
-	public Box(){
+	public Grid(){
 		super(vertices, indices, texCoords, texPath);
 	}
 	
@@ -58,8 +59,8 @@ public class Box extends GameObject{
 		tex.bind();
 		Shader.shader1.enable();
 		// Uncomment different lines to see different rotation effects
-//		Shader.shader1.setUniformMat4f("ml_matrix", Matrix4f.translate(position).multiply(Matrix4f.rotateX(rot)));
-//		Shader.shader1.setUniformMat4f("ml_matrix", Matrix4f.translate(position).multiply(Matrix4f.rotateY(rot)));
+//			Shader.shader1.setUniformMat4f("ml_matrix", Matrix4f.translate(position).multiply(Matrix4f.rotateX(rot)));
+//			Shader.shader1.setUniformMat4f("ml_matrix", Matrix4f.translate(position).multiply(Matrix4f.rotateY(rot)));
 		Shader.shader1.setUniformMat4f("ml_matrix", Matrix4f.translate(position).multiply(Matrix4f.rotateZ(rot)));
 		VAO.render();
 		Shader.shader1.disable();
@@ -69,13 +70,16 @@ public class Box extends GameObject{
 	
 	@Override
 	public void update(){
-		rot += 0.1f;
+//			rot += 0.1f;
 		// Uncomment different lines to see different translation effects
-//		position.x += 0.01f;
-//		position.y += 0.01f;
-		if(Input.isKeyDown(GLFW_KEY_SPACE))
-			position.z += 0.1f;
+//			position.x += 0.01f;
+//			position.y += 0.01f;
+			if(Input.isKeyDown(GLFW_KEY_SPACE))
+				position.z += 0.1f;
 	}
 
-	
+		
 }
+
+
+
